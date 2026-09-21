@@ -1,0 +1,11 @@
+# Python 自动生成的缓存文件，不需要提交
+__pycache__/
+*.pyc
+
+# 虚拟环境
+venv/
+.venv/
+
+# 编辑器配置
+.vscode/
+.idea/

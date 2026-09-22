@@ -1,3 +1,6 @@
+import json
+import os
+
 def show_menu():
     print("1. 查看全部")
     print("2. 添加联系人")
@@ -5,12 +8,9 @@ def show_menu():
     print("4. 删除联系人")
     print("5. 退出")
 
-
 def show_all(contacts):
     for name in contacts:
         print(f"{name}:{contacts[name]}")
-
-
 
 def add_contact(contacts):
     name = input("请输入联系人姓名:")
@@ -30,16 +30,12 @@ def add_contact(contacts):
         contacts[name] = phone
         print("添加成功")
 
-
-
 def find_contact(contacts):
     name = input("请输入联系人姓名:")
     if name in contacts:
         print(f"查找成功{name}:{contacts[name]}")
     else:
         print("该联系人不存在")
-
-
 
 def delete_contact(contacts):
     name = input("请输入联系人姓名:")
@@ -49,9 +45,12 @@ def delete_contact(contacts):
     else:
         print("该联系人不存在")
 
-
 def main():
-    contacts = {"张三":"13453", "李四":"14223"}
+    if os.path.exists("contacts.json"):
+        with open("contacts.json", "r", encoding="utf-8") as f:
+            contacts = json.load(f)
+    else:
+        contacts = {"张三": "1381525", "李四": "1399565"}
     while True:
         show_menu()
         num = int(input("请输入你的操作"))
@@ -64,11 +63,12 @@ def main():
         elif num == 4:
             delete_contact(contacts)
         elif num == 5:
-            print("退出成功")
+            with open("contacts.json", "w", encoding="utf-8") as f:
+                json.dump(contacts, f, ensure_ascii=False, indent=2)
+            print("已保存，退出成功")
             break
         else:
             print("请输入1~5的数字在进行操作")
-
 
 main()
 

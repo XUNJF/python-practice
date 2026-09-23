@@ -9,3 +9,8 @@ venv/
 # 编辑器配置
 .vscode/
 .idea/
+
+# ⚠️ API 密钥，绝对不能提交到公开仓库
+key.txt
+*.key
+.env

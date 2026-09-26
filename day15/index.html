@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>我的AI助手</title>
+</head>
+<body>
+<h1>我的AI助手</h1>
+<input id="question" placeholder="输入你的问题" onkeydown="if(event.key==='Enter') send()">
+<button onclick="send()">发送</button>
+<button onclick="clearAll()">清空</button>
+<div id ="chat"></div>
+
+<script>
+    function addMessage(role, text){
+        const div = document.createElement("div");
+        div.textContent = role + ":" + text;
+        document.getElementById("chat").appendChild(div);
+    }
+
+    async function send(){
+        const q = document.getElementById("question").value;
+        addMessage("你",q);
+        const r = await fetch("/chat?question="+ encodeURIComponent(q),{method:"POST"});
+        const data = await r.json();
+        addMessage("AI",data.answer)
+        document.getElementById("question").value = "";
+        window.scrollTo(0,document.body.scrollHeight);
+    }
+    function clearAll(){
+            document.getElementById("question").value = "";
+            document.getElementById("chat").innerHTML = "";
+        }
+
+
+
+
+
+</script>
+</body>
+</html>

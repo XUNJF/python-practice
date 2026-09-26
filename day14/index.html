@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>我的AI助手</title>
+</head>
+<body>
+<h1>我的AI助手</h1>
+<input id="question" placeholder="输入你的问题">
+<button onclick="send()">发送</button>
+<button onclick="clearAll()">清空</button>
+<p id="answer"></p>
+
+<script>
+    async function send(){
+        const q = document.getElementById("question").value;
+        const r = await fetch("/chat?question="+ encodeURIComponent(q),{method:"POST"});
+        const data = await r.json();
+        document.getElementById("answer").textContent = data.answer;   
+    }
+    function clearAll(){
+            document.getElementById("question").value = "";
+            document.getElementById("answer").textContent = "";
+        }
+</script>
+</body>
+</html>

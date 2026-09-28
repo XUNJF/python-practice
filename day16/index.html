@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>我的AI助手</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        h1 {font-size: 22px;}
+
+        #question {
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 60%;
+        }
+
+        button {
+            padding: 10px 16px;
+            font-size: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #0084ff;
+            color: white;
+            cursor: pointer;
+        }
+
+        #chat {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .bubble {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: #0084ff;
+            color: white;
+        }
+
+        .ai {
+            align-self: flex-start;
+            background: #f0f0f0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<h1>我的AI助手</h1>
+<input id="question" placeholder="输入你的问题" onkeydown="if(event.key==='Enter') send()">
+<button onclick="send()">发送</button>
+<button onclick="clearAll()">清空</button>
+<div id="chat"></div>
+
+<script>
+    function addMessage(role, text){
+        const div = document.createElement("div");
+        div.textContent = text;
+        div.className = "bubble " + (role === "你" ? "user" : "ai");
+        document.getElementById("chat").appendChild(div);
+    }
+
+    async function send(){
+        const q = document.getElementById("question").value;
+        addMessage("你",q);
+        const r = await fetch("/chat?question="+ encodeURIComponent(q),{method:"POST"});
+        const data = await r.json();
+        addMessage("AI",data.answer)
+        document.getElementById("question").value = "";
+        window.scrollTo(0,document.body.scrollHeight);
+    }
+    function clearAll(){
+        document.getElementById("question").value = "";
+        document.getElementById("chat").innerHTML = "";
+        }
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+[
+  {
+    "role": "system",
+    "content": "你是一个Python助教,用少于20个字回答。"
+  },
+  {
+    "role": "user",
+    "content": "什么是变量？"
+  },
+  {
+    "role": "assistant",
+    "content": "变量是存储数据的容器。"
+  },
+  {
+    "role": "user",
+    "content": "什么是变量？"
+  },
+  {
+    "role": "assistant",
+    "content": "变量是存储数据的命名容器。"
+  }
+]

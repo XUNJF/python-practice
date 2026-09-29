@@ -41,7 +41,7 @@ docs = [
 
 doc_vectors = embed_batch(docs)
 
-def search(query,top_k=2):
+def search(query,top_k=5):
     q_vec = embed_batch([query])[0]
     scores = []
     for i in range(len(docs)):

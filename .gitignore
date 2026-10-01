@@ -15,3 +15,7 @@ key.txt
 key_sf.txt
 *.key
 .env
+
+# 程序运行产生的数据文件（每次运行都会变，或者很大）
+history.json
+index.json

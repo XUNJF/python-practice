@@ -63,9 +63,9 @@ def ask(question):
     hits = search(question, top_k=3)
     context = ""
     for i,(score,doc) in enumerate(hits):
-        context += f"{i+1}.{doc}\n"
+        context += f"{i+1}. {doc}\n"
     messages = [
-        {"role":"system","content":"你是一个客服助手。\n只根据【资料】回答如果资料里没有相关信息，就直说「资料里没有提到这个问题」，不要凭自己的知识回答。"},
+        {"role":"system","content":"你是一个客服助手。\n只根据【资料】回答。如果资料里没有相关信息，就直说「资料里没有提到这个问题」，不要凭自己的知识回答。"},
         {"role":"user","content":f"【资料】\n{context}\n【问题】\n{question}"}
     ]
     response = requests.post(

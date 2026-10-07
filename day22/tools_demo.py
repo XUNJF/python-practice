@@ -122,6 +122,5 @@ while True:
             "tool_call_id":tc["id"],
             "content":str(result),
         })
-        print(messages)
 
     print()

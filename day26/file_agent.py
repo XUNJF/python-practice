@@ -183,6 +183,20 @@ FUNCS = {
     "search_notes":search_notes,
 }
 
+MAX_ROUNDS = 10
+SYSTEM_PROMPT = (
+    "你是一个学习助手，可以读写工作目录里的文件，也能检索笔记。\n"
+    "用户会给你一个【目标】，不是一个问题。\n"
+    "\n"
+    "你需要自己想清楚分几步做，然后用工具一步一步完成：\n"
+    "- 先看看有什么可用（list_files）\n"
+    "- 不知道在哪就检索（search_notes）\n"
+    "- 知道是哪个文件就去读（read_file）\n"
+    "- 需要产出就写出去（write_file）\n"
+    "\n"
+    "做完了再给最终答复，说明你做了什么、结果在哪。"
+    )
+
 def call_model(messages):
     response = requests.post(
         "https://api.deepseek.com/chat/completions",
@@ -195,23 +209,23 @@ def call_model(messages):
     )
     return response.json()["choices"][0]
 
-
-def run(question):
+def run(goal):
     print("="*62)
-    print(f"目标：{question}")
+    print(f"目标：{goal}")
     print("="*62)
+    print()
     messages = [
-        {"role":"system","content":"你是一个学习助手，可以读写工作目录里的文件。"},
-        {"role":"user","content":question},
+        {"role":"system","content":SYSTEM_PROMPT},
+        {"role":"user","content":goal},
     ]
-
-    n = 0
-    while True:
-        n += 1
+    for n in range(1, MAX_ROUNDS + 1):
         choice = call_model(messages)
         msg = choice["message"]
+        if msg.get("content"):
+            print(f"  [想法] {msg['content']}")
+            print()
         if choice["finish_reason"] != "tool_calls":
-            print(f"  (共{n}轮)")
+            print(f"  ── 第 {n} 轮结束 ──")
             print()
             print(msg["content"])
             print()
@@ -219,22 +233,23 @@ def run(question):
         messages.append(msg)
         for tc in msg["tool_calls"]:
             name = tc["function"]["name"]
-            args =json.loads(tc["function"]["arguments"])
+            args = json.loads(tc["function"]["arguments"])
             show = {}
             for k, v in args.items():
-                if isinstance(v, str) and len(v) >40:
+                if isinstance(v, str) and len(v)>40:
                     show[k] = v[:40] + "..."
                 else:
                     show[k] = v
-            print(f" [{n}]→{name}({show})")
+            print(f"  [{n}] → {name}({show})")
             result = FUNCS[name](**args)
-            messages.append({
-                "role":"tool",
-                "tool_call_id":tc["id"],
-                "content":str(result)
-            })
+            messages.append(
+                {
+                    "role":"tool",
+                    "tool_call_id":tc["id"],
+                    "content":str(result),
+                }
+            )
+        print()
+    print("  ⚠ 到轮数上限了，还没做完")
 
-
-run("先看看工作目录里有什么文件")
-
-run("把第4天那个笔记读出来，总结成五条要点，存成 第4天总结.md")
+run("把笔记里所有关于 RAG 的内容找出来，整理成一份复习材料，存成 RAG复习.md")

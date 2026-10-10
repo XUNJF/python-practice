@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang = "zh">
+<head>
+<meta charset="utf-8">
+<title>我的学习助手</title>
+<style>
+    body{font-family: system-ui,sans-serif;max-width: 720px;margin: 40px auto;padding: 0 16px;}
+    textarea{width: 100%;height: 70px;font-size: 15px;padding: 8px;box-sizing: border-box;}
+    button{margin-top: 10px;padding: 8px 20px;font-size: 15px;cursor: pointer;}
+    #steps{margin-top: 16px;color: #666;font-size: 14px;white-space: pre-wrap;}
+    #answer{margin-top: 16px;white-space: pre-wrap;line-height: 1.7;}
+</style>
+</head>
+<body>
+    <h2>我的学习助手</h2>
+    <textarea id="goal" placeholder="给它一个目标，比如：把笔记里所有关于 RAG 的内容整理成一份复习材料，存成 RAG复习.md"></textarea>
+    <br>
+    <button onclick="send()">开始</button>
+    <div id="steps"></div>
+    <div id="answer"></div>
+
+<script>
+// 太长的值截短，免得刷屏
+function short(v) {
+    if (typeof v === 'string' && v.length > 40) {
+        return v.slice(0, 40) + '...';
+    }
+    return v;
+}
+
+async function send(){
+    const goal = document.getElementById("goal").value.trim();
+    if (goal === '') {
+        document.getElementById("steps").textContent = '请先输入一个目标';
+        return;
+    }
+    document.getElementById("steps").textContent = '正在做……（可能要十几秒）';
+    document.getElementById("answer").textContent = '';
+
+    const res = await fetch('/run', {
+        method: 'POST',
+        headers: {'Content-Type': "application/json"},
+        body: JSON.stringify({goal: goal})
+    });
+    const data = await res.json();
+
+    let s = '它做了这些：\n';
+    if (data.steps.length === 0) {
+        s += '（这个问题不需要工具，直接回答）\n';
+    } else {
+        for (const st of data.steps) {
+            let args = '';
+            for (const k in st.args) {
+                args += `${k}=${short(st.args[k])} `;
+            }
+            s += `  第${st.round}轮  ${st.tool}(${args.trim()})\n`;
+        }
+    }
+
+    document.getElementById("steps").textContent = s;
+    document.getElementById("answer").textContent = data.answer;
+}
+</script>
+</body>
+</html>

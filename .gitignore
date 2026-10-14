@@ -19,3 +19,6 @@ key_sf.txt
 # 程序运行产生的数据文件（每次运行都会变，或者很大）
 history.json
 index.json
+
+# 数据库文件（里面是对话内容，不提交）
+*.db

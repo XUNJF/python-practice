@@ -18,7 +18,7 @@ with open("key.txt",encoding="utf-8")as f:
 
 
 model = ChatDeepSeek(
-    model="deepseek-chat",
+    model="deepseek-flash",
     api_key=ds_key,
     timeout=60,
     max_retries=3,

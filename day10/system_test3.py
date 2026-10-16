@@ -43,7 +43,7 @@ while True:
     messages.append({"role":"user","content":question})
 
     payload = {
-        "model":"deepseek-chat",
+        "model":"deepseek-flash",
         "messages":messages,
     }
     response = requests.post(

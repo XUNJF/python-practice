@@ -16,7 +16,7 @@ class ChatBot:
     def chat(self,question):
         self.messages.append({"role":"user","content":question})
         payload = {
-            "model":"deepseek-chat",
+            "model":"deepseek-flash",
             "messages":self.messages,
         }
         try:
@@ -47,14 +47,14 @@ class ChatBot:
             with open(filename,"r",encoding="utf-8")as f:
                 self.messages = json.load(f)
         except FileNotFoundError:
-            print("还没有历史记录")
+            print("还没有历史记�?)
         except json.JSONDecodeError:
-            print("历史文件损坏了")
+            print("历史文件损坏�?)
 
 
-bot = ChatBot("你是一个Python助教：用少于20个字来回答这个问题，记住要简便。")
+bot = ChatBot("你是一个Python助教：用少于20个字来回答这个问题，记住要简便�?)
 bot.load("history.json")
-print(bot.chat("什么是变量？"))
+print(bot.chat("什么是变量�?))
 bot.save("history.json")
 
 

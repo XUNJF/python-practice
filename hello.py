@@ -1,6 +1,6 @@
 # 输入输出
 # name = input("请输入你的名字：")
-# print("你好，" + name)
+# print("你好�? + name)
 # age = int(input("请输入你的年龄："))
 # print("我的年龄是：" ,age)
 
@@ -12,18 +12,18 @@
 # elif score >= 60:
 #     print("及格")
 # else:
-#     print("不及格")
+#     print("不及�?)
 
 
-# for循环（左闭右开）
+# for循环（左闭右开�?
 # for i in range(5):
 #     print(i)
 
 
 # #练习1
-# num1 = float(input("请输入第一个数："))
+# num1 = float(input("请输入第一个数�?))
 # num2 = float(input("请输入第二个数："))
-# symbol = input("请输入运算符：")
+# symbol = input("请输入运算符�?)
 # if symbol == "+":
 #     print("结果是：", num1+num2)
 # elif symbol == "-":
@@ -32,11 +32,11 @@
 #     print("结果是：", num1*num2)
 # elif symbol == "/":
 #     if num2 == 0:
-#         print("不支持除法")
+#         print("不支持除�?)
 #     else:
 #         print("结果是：", num1/num2)
 # else:
-#    print("不支持的运算符")
+#    print("不支持的运算�?)
 
 
 # #练习2

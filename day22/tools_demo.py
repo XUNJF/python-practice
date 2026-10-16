@@ -82,7 +82,7 @@ def call_model(messages):
             "Content-Type":"application/json",
         },
         json = {
-            "model":"deepseek-chat",
+            "model":"deepseek-flash",
             "messages":messages,
             "tools":TOOLS,
         },

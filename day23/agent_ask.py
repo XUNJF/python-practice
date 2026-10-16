@@ -102,7 +102,7 @@ def call_model(messages):
             "Authorization":f"Bearer {ds_key}",
             "Content-Type":"application/json",
         },
-        json={"model":"deepseek-chat","messages":messages,"tools":TOOLS},
+        json={"model":"deepseek-flash","messages":messages,"tools":TOOLS},
         timeout=60,
     )
     return response.json()["choices"][0]

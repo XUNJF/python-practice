@@ -123,7 +123,7 @@ def ask(question, chunks, vectors):
             "Authorization": f"Bearer {ds_key}",
             "Content-Type": "application/json",
         },
-        json={"model": "deepseek-chat", "messages": messages},
+        json={"model": "deepseek-flash", "messages": messages},
         timeout=60,
     )
 

@@ -24,7 +24,7 @@ headers = {
 }
 
 payload = {
-    "model": "deepseek-chat",
+    "model": "deepseek-flash",
     "messages":[{"role":"system","content":SYSTEM},
                 {"role":"user","content":"定义SYSTEM的格式是怎样的"}]
 }

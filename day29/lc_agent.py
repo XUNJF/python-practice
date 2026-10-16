@@ -83,7 +83,7 @@ def get_time()->str:
     import datetime
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-model = ChatDeepSeek(model="deepseek-chat",api_key=ds_key)
+model = ChatDeepSeek(model="deepseek-flash",api_key=ds_key)
 
 agent = create_agent(
     model,

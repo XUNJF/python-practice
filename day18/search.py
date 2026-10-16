@@ -74,7 +74,7 @@ def ask(question):
             "Authorization":f"Bearer {ds_key}",
             "Content-Type":"application/json",
         },
-        json = {"model":"deepseek-chat","messages":messages},
+        json = {"model":"deepseek-flash","messages":messages},
         timeout=30,
     )
     return response.json()["choices"][0]["message"]["content"]

@@ -10,7 +10,7 @@ headers = {
 }
 
 payload = {
-    "model":"deepseek-chat",
+    "model":"deepseek-flash",
     "messages":[{"role": "system", "content": "回答必须控制在20个字以内"},
                 {"role": "user",   "content": "什么是变量？"}]
             

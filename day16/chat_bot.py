@@ -17,7 +17,7 @@ class ChatBot:
     def chat(self,question):
         self.messages.append({"role":"user","content":question})
         payload = {
-            "model":"deepseek-chat",
+            "model":"deepseek-flash",
             "messages":self.messages,
         }
         try:

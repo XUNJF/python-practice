@@ -23,7 +23,7 @@ response = requests.post(
         "Content-Type": "application/json",
     },
     json={
-        "model": "deepseek-chat",
+        "model": "deepseek-flash",
         "messages": [{"role": "user", "content": "你好"}],
         "tools": TOOLS,
     },

@@ -9,7 +9,7 @@ headers = {
 }
 
 payload = {
-    "model": "deepseek-chat",
+    "model": "deepseek-flash",
     "messages":[
         {"role": "user",
          "content": "你好,请用一句话介绍你自己"

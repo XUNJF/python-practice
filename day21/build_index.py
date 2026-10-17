@@ -56,7 +56,7 @@ def cut_into_chunks():
                 text = part
             else:
                 text = "## " + part
-            text == text.strip()
+            text = text.strip()
             if text.endswith("---"):
                 text = text[:-3].strip()
             if len(text) < MIN_LEN:

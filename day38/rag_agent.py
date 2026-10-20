@@ -9,7 +9,8 @@ import requests
 import math
 from typing import TypedDict, Annotated
 
-from langgraph.checkpoint.memory import InMemorySaver
+import sqlite3
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_deepseek import ChatDeepSeek
 from langgraph.graph import StateGraph, START, END, add_messages
 from langchain_core.messages import RemoveMessage
@@ -184,7 +185,8 @@ builder.add_edge("retrieve","answer_with_notes")
 builder.add_edge("answer_with_notes",END)
 builder.add_edge("answer_directly",END)
 
-graph = builder.compile(checkpointer=InMemorySaver())
+conn = sqlite3.connect("记忆.db",check_same_thread=False)
+graph = builder.compile(checkpointer=SqliteSaver(conn))
 
 def chat(question, thread_id = "default"):
     config = {"configurable":{"thread_id":thread_id}}

@@ -22,3 +22,5 @@ index.json
 
 # 数据库文件（里面是对话内容，不提交）
 *.db
+*.db-wal
+*.db-shm

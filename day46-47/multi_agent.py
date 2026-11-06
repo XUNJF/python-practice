@@ -144,7 +144,10 @@ def writer(state):
         system = ("只根据下面提供的【资料】回答；资料里没有就说「资料里没有提到这个」。\n\n"
                 f"【资料】\n{notes}")
     else:
-        system = "根据前面的对话自然回应；闲聊就简短回应。"
+        system = ("根据前面的对话自然回应。\n"
+                  "如果这是个技术问题，而你没有拿到相关资料，"
+                  "就明确说「笔记里没有相关内容」——不要凭自己的知识编。\n"
+                  "闲聊就简短回应。")
     msgs = [{"role":"system","content":system}]
     if state.get("summary"):
         msgs.append({"role":"system","content": f"【之前聊过的内容摘要】\n{state['summary']}"})
@@ -158,8 +161,6 @@ def writer(state):
 
 def route(state):
     n = state.get("next","")
-    if not state.get("notes") and not state.get("calc_result") and "是什么" in state['question']:
-        return "researcher"
     if "research" in n:
         return "researcher"
     if "calc" in n:

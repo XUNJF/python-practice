@@ -59,6 +59,23 @@
   }
   #send:disabled { background: #b9c9bd; cursor: default; }
 
+  /* 历史抽屉 */
+  #drawer {
+    position: fixed; top: 0; right: -320px; width: 300px; height: 100vh;
+    background: #fff; border-left: 1px solid #e5e5e0;
+    transition: right .22s ease; overflow-y: auto; padding: 16px;
+    box-shadow: -4px 0 16px rgba(0,0,0,.06); z-index: 10;
+  }
+  #drawer.open { right: 0; }
+  #drawer h2 { font-size: 13px; color: #888; margin: 0 0 12px; font-weight: 500; }
+  .hitem {
+    padding: 10px 12px; border-radius: 10px; cursor: pointer;
+    border: 1px solid #eeece6; margin-bottom: 8px; font-size: 13px;
+  }
+  .hitem:hover { background: #f7f7f3; border-color: #dcdcd4; }
+  .hitem .q { font-weight: 500; margin-bottom: 4px; }
+  .hitem .t { font-size: 11px; color: #9a9a92; }
+
   .dots span {
     display: inline-block; width: 6px; height: 6px; margin-right: 4px;
     background: #b0b0a8; border-radius: 50%; animation: blink 1.2s infinite;
@@ -100,7 +117,10 @@
 
 <header>
     <h1>我的笔记助手</h1>
-    <button onclick="newChat()">新对话</button>
+    <div style="display: flex; gap: 8px;">
+      <button onclick="toggleHistory()">历史</button>
+      <button onclick="newChat()">新对话</button>
+    </div>
 </header>
 
 <div id="log">
@@ -112,7 +132,12 @@
     <textarea id="msg" placeholder="问点什么....(Enter 发送，Shift+Enter 换行)"></textarea>
     <button id="send" onclick="send()">发送</button>
 </div>
-
+<div id="drawer">
+  <h2>历史记录
+    <span onclick="toggleHistory()" style="float:right;cursor:pointer;font-size:16px;line-height:1">x</span>
+  </h2>
+  <div id="hlist"></div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 let threadId = "t-" + Date.now()
@@ -157,6 +182,62 @@ function newChat(){
   log.innerHTML = "";
   addRow("ai","新对话开始了。之前聊的内容我不会记得。");
 }
+
+document.addEventListener("click",(e)=>{
+  const d = document.getElementById("drawer");
+  if (!d.classList.contains("open")) return;
+  if (d.contains(e.target)) return;
+  if (e.target.closest("header")) return;
+  d.classList.remove("open");
+});
+
+async function toggleHistory(){
+  const d = document.getElementById("drawer");
+  d.classList.toggle("open");
+  if (d.classList.contains("open")) await loadHistory();
+}
+
+async function loadHistory(){
+  const list = document.getElementById("hlist");
+  list.innerHTML = "加载中…";
+  try {
+    const r = await fetch("/sessions?n=20");
+    const data = await r.json();
+    if (!data.items.length){ list.innerHTML = "还没有记录。"; return; }
+    list.innerHTML = "";
+    for (const s of data.items){
+      const el = document.createElement("div");
+      el.className = "hitem";
+      el.innerHTML = '<div class="q">' + esc(s.title) + '</div>' +
+                     '<div class="t">' + esc(s.last_time) + ' · ' + s.n + ' 条</div>';
+      el.onclick = () => openSession(s.thread_id);
+      list.appendChild(el);
+    }
+  } catch (err) {
+    list.innerHTML = "读不到历史：" + esc(err.message);
+  }
+}
+
+async function openSession(tid){
+  threadId = tid;                       // 接着这个会话聊
+  log.innerHTML = "";
+  const r = await fetch("/sessions/" + encodeURIComponent(tid));
+  const data = await r.json();
+  for (const it of data.items){
+    addRow("user", esc(it.question));
+    const b = addRow("ai", (typeof marked !== "undefined") ? marked.parse(it.answer) : esc(it.answer));
+    if (it.sources && it.sources.length){
+      const m = document.createElement("div");
+      m.className = "meta";
+      m.innerHTML = '<span class="tag">查了笔记</span>' + it.sources.join("、");
+      b.appendChild(m);
+    }
+  }
+  document.getElementById("drawer").classList.remove("open");
+  log.scrollTop = log.scrollHeight;
+}
+
+
 
 async function send() {
   const text = box.value.trim();

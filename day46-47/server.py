@@ -12,6 +12,10 @@ from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 
 import multi_agent
+import multi_agent
+import db
+
+db.create_table()
 
 app = FastAPI()
 
@@ -47,6 +51,7 @@ def chat_stream(req:ChatRequest):
         raise HTTPException(status_code=400, detail="消息不能为空")
     def gen():
         found_sources = []
+        answer_parts = []
         config = {"configurable":{"thread_id":req.thread_id}}
         for item in multi_agent.graph.stream(
             {"question":msg}, config=config, stream_mode=["updates","messages"]
@@ -65,11 +70,27 @@ def chat_stream(req:ChatRequest):
             else:
                 chunk, meta = data
                 if meta.get("langgraph_node") == "writer" and chunk.content:
+                    answer_parts.append(chunk.content)
                     yield json.dumps(
                         {"type":"text","content":chunk.content},
                         ensure_ascii=False,
                     ) + "\n"
+        db.save(msg, "".join(answer_parts), found_sources, req.thread_id)
         yield json.dumps(
-            {"type":"meta","sources":found_sources},ensure_ascii=False
-        ) + "\n"
+            {"type":"meta", "sources":found_sources},ensure_ascii=False)+"\n"
     return StreamingResponse(gen(), media_type="application/x-ndjson")
+
+@app.get("/sessions")
+def sessions(n:int = 20):
+    db.create_table()
+    return {"items":db.sessions(n)}
+
+@app.get("/sessions/{thread_id}")
+def session_detail(thread_id: str):
+    return {"items":db.by_thread(thread_id)}
+
+
+@app.get("/history")
+def history(n: int = 20):
+    db.create_table()
+    return {"items":db.recent(n)}
